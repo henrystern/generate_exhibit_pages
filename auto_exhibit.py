@@ -1,21 +1,21 @@
 import string
-from fpdf import FPDF
+from fpdf import FPDF # fpdf2 not fpdf1
 
 class PDF(FPDF):
     def add_exhibit_id(self
-                       , exhibit="_____"
-                       , affidavit="________________"
-                       , day="___"
-                       , month="______________"
-                       , year="____"
-                       , province="__________"
-                       , bookmark_prefix="Exhibit"
-                       , font="Times"
-                       , font_style="B"
-                       , font_sz=12
-                       , draw_border=True
-                       , ln_height=8
-                       , str_override=""):
+                       , exhibit="_____" # Exhibit letter
+                       , affidavit="________________" # affidavit name
+                       , day="___" # day sworn
+                       , month="______________" # month sworn
+                       , year="____" # year sworn
+                       , province="__________" # province of commissioner
+                       , bookmark_prefix="Exhibit" # prefix for the bookmark to the exhibit page (will always end with exhibit letter)
+                       , font="Times" # Courier, Helvetica, Times
+                       , font_style="B" # B for bold
+                       , font_sz=12 # Font size
+                       , draw_border=True # Surround text with a border
+                       , ln_height=8 # Line height
+                       , str_override=""): # Override default text with any string
 
         self.start_section(f"{bookmark_prefix} {exhibit}", level=0)
         self.set_xy(pdf.w/6, pdf.h/4)
@@ -59,6 +59,8 @@ def get_day_suffix(day):
 if __name__ == "__main__":
     pdf = PDF(format='Letter')
 
+    # ====== #
+    # Inputs #
     start_exhibit = "A"
     end_exhibit = "AAAAA"
     affidavit = "Test"
@@ -66,6 +68,8 @@ if __name__ == "__main__":
     month = "April"
     year = 2023
     province = "Ontario"
+    #        #
+    # ====== #
 
     start_exhibit_num = exhibit_letter_to_num(start_exhibit)
     end_exhibit_num = exhibit_letter_to_num(end_exhibit)
