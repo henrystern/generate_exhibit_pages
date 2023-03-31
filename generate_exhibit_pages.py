@@ -22,13 +22,13 @@ def main():
     for exhibit_num in range(start_exhibit_num, end_exhibit_num + 1):
         exhibit = exhibit_num_to_letter(exhibit_num)
         pdf.add_page()
-        pdf.add_exhibit_id(exhibit_num_to_letter(exhibit_num), affidavit, day, month, year, province)
+        pdf.add_exhibit_page(exhibit_num_to_letter(exhibit_num), affidavit, day, month, year, province)
 
     pdf.output(name="exhibits.pdf")
     return
 
 class PDF(FPDF):
-    def add_exhibit_id(self
+    def add_exhibit_page(self
                        , exhibit="_____" # Exhibit letter
                        , affidavit="________________" # affidavit name
                        , day="___" # day sworn
@@ -44,7 +44,7 @@ class PDF(FPDF):
                        , str_override=""): # Override default text with any string
 
         self.start_section(f"{bookmark_prefix} {exhibit}", level=0)
-        self.set_xy(pdf.w/6, pdf.h/4)
+        self.set_xy(self.w/6, self.h/4)
         self.set_font(font, font_style, font_sz)
 
         if str_override:
@@ -52,7 +52,7 @@ class PDF(FPDF):
         else:
             text = f"This is Exhibit \"{exhibit}\" referred to in the Affidavit of {affidavit} sworn (or affirmed) before me this {day}{get_day_suffix(day)} day of {month} {year}.\n\n_________________________________________\nA Commisioner/Notary Public for the Province of {province}"
 
-        self.multi_cell(w=(2*pdf.w)/3
+        self.multi_cell(w=(2*self.w)/3
                   , h=ln_height
                   , align='C'
                   , border=draw_border
