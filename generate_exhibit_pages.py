@@ -1,6 +1,32 @@
 import string
 from fpdf import FPDF # fpdf2 not fpdf1
 
+def main():
+    pdf = PDF(format='Letter')
+
+    # ====== #
+    # Inputs #
+    start_exhibit = "A"
+    end_exhibit = "AAAAA"
+    affidavit = "Test"
+    day = 1
+    month = "April"
+    year = 2023
+    province = "Ontario"
+    #        #
+    # ====== #
+
+    start_exhibit_num = exhibit_letter_to_num(start_exhibit)
+    end_exhibit_num = exhibit_letter_to_num(end_exhibit)
+
+    for exhibit_num in range(start_exhibit_num, end_exhibit_num + 1):
+        exhibit = exhibit_num_to_letter(exhibit_num)
+        pdf.add_page()
+        pdf.add_exhibit_id(exhibit_num_to_letter(exhibit_num), affidavit, day, month, year, province)
+
+    pdf.output(name="exhibits.pdf")
+    return
+
 class PDF(FPDF):
     def add_exhibit_id(self
                        , exhibit="_____" # Exhibit letter
@@ -57,26 +83,4 @@ def get_day_suffix(day):
         return "rd"
 
 if __name__ == "__main__":
-    pdf = PDF(format='Letter')
-
-    # ====== #
-    # Inputs #
-    start_exhibit = "A"
-    end_exhibit = "AAAAA"
-    affidavit = "Test"
-    day = 1
-    month = "April"
-    year = 2023
-    province = "Ontario"
-    #        #
-    # ====== #
-
-    start_exhibit_num = exhibit_letter_to_num(start_exhibit)
-    end_exhibit_num = exhibit_letter_to_num(end_exhibit)
-
-    for exhibit_num in range(start_exhibit_num, end_exhibit_num + 1):
-        exhibit = exhibit_num_to_letter(exhibit_num)
-        pdf.add_page()
-        pdf.add_exhibit_id(exhibit_num_to_letter(exhibit_num), affidavit, day, month, year, province)
-
-    pdf.output(name="exhibits.pdf")
+    main()
