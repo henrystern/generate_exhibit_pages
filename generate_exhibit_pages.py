@@ -1,7 +1,7 @@
 import string
 from fpdf import FPDF # fpdf2 not fpdf1
 
-def main():
+def main(): # only for if run as script otherwise call generate_exhibit_pages() directly
     pdf = PDF(format='Letter')
 
     # ====== #
@@ -16,6 +16,12 @@ def main():
     #        #
     # ====== #
 
+    pdf = generate_exhibit_pages(start_exhibit, end_exhibit, affidavit, day, month, year, province)
+
+    pdf.output(name="exhibits.pdf")
+    return
+
+def generate_exhibit_pages(start_exhibit, end_exhibit, affidavit, day, month, year, province):
     start_exhibit_num = exhibit_letter_to_num(start_exhibit)
     end_exhibit_num = exhibit_letter_to_num(end_exhibit)
 
@@ -24,8 +30,8 @@ def main():
         pdf.add_page()
         pdf.add_exhibit_page(exhibit_num_to_letter(exhibit_num), affidavit, day, month, year, province)
 
-    pdf.output(name="exhibits.pdf")
-    return
+    return pdf
+
 
 class PDF(FPDF):
     def add_exhibit_page(self
