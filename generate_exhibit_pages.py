@@ -14,61 +14,43 @@ def main():  # only for if run as script
     month = "April"
     year = 2023
     province = "Ontario"
-    string_override = f'Exhibit "{exhibit}"'
     #        #
     # ====== #
 
-    if type(start_exhibit) is str:
-        pdf = generate_letter_pdf(
-            start_exhibit, end_exhibit, affidavit, day, month, year, province, string_override
-        )
-    elif type(start_exhibit) is int:
-        pdf = generate_num_pdf(
-            start_exhibit, end_exhibit, affidavit, day, month, year, province, string_override
-        )
-    else:
-        raise ValueError('start_exhibit must be a string ("a") or integer (1)')
+    pdf = generate_pdf(
+        start_exhibit, end_exhibit, affidavit, day, month, year, province
+    )
 
     pdf.output(name="exhibits.pdf")
     return
 
 
-def generate_letter_pdf(
-    start_exhibit, end_exhibit, affidavit, day, month, year, province, string_override
+def generate_pdf(
+    start_exhibit, end_exhibit, affidavit, day, month, year, province
 ):
-    start_exhibit_num = exhibit_letter_to_num(start_exhibit)
-    end_exhibit_num = exhibit_letter_to_num(end_exhibit)
+    if type(start_exhibit) is str:
+        start_exhibit = exhibit_letter_to_num(start_exhibit)
+        end_exhibit = exhibit_letter_to_num(end_exhibit)
+        letter_style = True
+    else:
+        letter_style = False
 
-    pdf = PDF(format="Letter")
-    for exhibit_num in range(start_exhibit_num, end_exhibit_num + 1):
-        pdf.add_page()
-        pdf.add_exhibit_page(
-            exhibit_num_to_letter(exhibit_num),
-            affidavit,
-            day,
-            month,
-            year,
-            province,
-            str_override=string_override
-        )
-
-    return pdf
-
-
-def generate_num_pdf(
-    start_exhibit, end_exhibit, affidavit, day, month, year, province, string_override
-):
     pdf = PDF(format="Letter")
     for exhibit_num in range(start_exhibit, end_exhibit + 1):
         pdf.add_page()
         pdf.add_exhibit_page(
-            exhibit_num,
+            (
+                exhibit_num_to_letter(exhibit_num)
+                if letter_style
+                else exhibit_num
+            ),
             affidavit,
             day,
             month,
             year,
             province,
-            str_override=string_override
+            # Override string here
+            str_override=f"Exhibit {exhibit_num_to_letter(exhibit_num) if letter_style else exhibit_num}"
         )
 
     return pdf
@@ -98,14 +80,16 @@ class PDF(FPDF):
         if str_override:
             text = str_override
         else:
-            text = (f'This is Exhibit "{exhibit}" '
-                    f'referred to in the Affidavit of {affidavit} '
-                    f'sworn (or affirmed) before me this '
-                    f'{day}{get_day_suffix(day)} '
-                    f'day of {month}, {year}.\n\n'
-                    f'_________________________________________\n'
-                    f'A Commisioner/Notary Public '
-                    f'for the Province of {province}')
+            text = (
+                f'This is Exhibit "{exhibit}" '
+                f"referred to in the Affidavit of {affidavit} "
+                f"sworn (or affirmed) before me this "
+                f"{day}{get_day_suffix(day)} "
+                f"day of {month}, {year}.\n\n"
+                f"_________________________________________\n"
+                f"A Commisioner/Notary Public "
+                f"for the Province of {province}"
+            )
 
         self.multi_cell(
             w=(2 * self.w) / 3,
