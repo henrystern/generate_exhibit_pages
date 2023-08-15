@@ -5,35 +5,36 @@ from fpdf import FPDF  # fpdf2 not fpdf1
 def main():  # only for if run as script
     # ====== #
     # Inputs #
-    start_exhibit = "A"
-    # start_exhibit = 1
-    end_exhibit = "AAA"
-    # end_exhibit = 100
+    # start_exhibit = "A"
+    start_exhibit = 1
+    # end_exhibit = "AAA"
+    end_exhibit = 100
     affidavit = "Test"
     day = 1
     month = "April"
     year = 2023
     province = "Ontario"
+    string_override = f'Exhibit "{exhibit}"'
     #        #
     # ====== #
 
     if type(start_exhibit) is str:
         pdf = generate_letter_pdf(
-            start_exhibit, end_exhibit, affidavit, day, month, year, province
+            start_exhibit, end_exhibit, affidavit, day, month, year, province, string_override
         )
     elif type(start_exhibit) is int:
         pdf = generate_num_pdf(
-            start_exhibit, end_exhibit, affidavit, day, month, year, province
+            start_exhibit, end_exhibit, affidavit, day, month, year, province, string_override
         )
     else:
         raise ValueError('start_exhibit must be a string ("a") or integer (1)')
-    
+
     pdf.output(name="exhibits.pdf")
     return
 
 
 def generate_letter_pdf(
-    start_exhibit, end_exhibit, affidavit, day, month, year, province
+    start_exhibit, end_exhibit, affidavit, day, month, year, province, string_override
 ):
     start_exhibit_num = exhibit_letter_to_num(start_exhibit)
     end_exhibit_num = exhibit_letter_to_num(end_exhibit)
@@ -48,13 +49,14 @@ def generate_letter_pdf(
             month,
             year,
             province,
+            str_override=string_override
         )
 
     return pdf
 
 
 def generate_num_pdf(
-    start_exhibit, end_exhibit, affidavit, day, month, year, province
+    start_exhibit, end_exhibit, affidavit, day, month, year, province, string_override
 ):
     pdf = PDF(format="Letter")
     for exhibit_num in range(start_exhibit, end_exhibit + 1):
@@ -66,6 +68,7 @@ def generate_num_pdf(
             month,
             year,
             province,
+            str_override=string_override
         )
 
     return pdf
